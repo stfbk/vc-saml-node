@@ -66,8 +66,8 @@ app.get('/metadata',
 		res.type('application/xml'); 
 		res.status(200).send(
 			samlStrategy.generateServiceProviderMetadata(
-			 fs.readFileSync(__dirname + '/certificates/ASPSP_authentication.crt', 'utf8'),	// decryptionCert.pem
-			 fs.readFileSync(__dirname + '/certificates/ASPSP_nonRepudiation.crt', 'utf8')		// signingCert.pem
+			 fs.readFileSync(__dirname + '/certificates/authentication.crt', 'utf8'),	// decryptionCert.pem
+			 fs.readFileSync(__dirname + '/certificates/nonRepudiation.crt', 'utf8')		// signingCert.pem
 			)
 		);
 	}
@@ -96,8 +96,8 @@ const samlStrategy = new saml.Strategy({
 	callbackUrl: 'http://localhost/login/callback',		// IDP will post SAML response here
 	issuer: 'saml-poc',	// the SP
 	identifierFormat: null,	// SP requests this from the IDP but the option will be specified by the IDP
-	decryptionPvk: fs.readFileSync(__dirname + '/certificates/ASPSP_authentication.key', 'utf8'),	// decryptionKey.pem
-	privateCert: fs.readFileSync(__dirname + '/certificates/ASPSP_nonRepudiation.crt', 'utf8'), // signingKey.pem
+	decryptionPvk: fs.readFileSync(__dirname + '/certificates/authentication.key', 'utf8'),	// decryptionKey.pem
+	privateCert: fs.readFileSync(__dirname + '/certificates/nonRepudiation.crt', 'utf8'), // signingKey.pem
 	validateInResponseTo: false,	// whether to validate SAML responses from the IDP
 	disableRequestedAuthnContext: true
 }, function(profile, done) {
