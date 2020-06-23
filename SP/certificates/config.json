@@ -1,0 +1,13 @@
+{
+	"keyType": "ec",
+	"keyBits": 384,
+	"distinguished_name": {
+		"C": "IT",
+		"ST": "IT",
+		"L": "Rome",
+		"O": "Account Servicing Payment Services Provider",
+		"OU": "ASPSP Test Unit",
+		"CN": "ASPSP",
+		"emailAddress": "ASPSP@imail.it"
+	}
+}

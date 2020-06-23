@@ -1,0 +1,7 @@
+# nodejs
+
+node_modules/
+
+# cryptographic material is stored in certificates/ subdirectories.
+# This is intentionally not added to .gitignore while we are in testing,
+# since every single certificate is fake.
