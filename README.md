@@ -1,19 +1,50 @@
-# saml-js
+# SAML x509 authentication flow
 
-SAML IDP and SP in nodejs
+### Dependencies
 
-## Install
+To be able to run this project you will need to install:
+- [Burp](https://portswigger.net/burp/communitydownload)
+- a browser (Chrome, IE, Firefox, Safari)
+- [NodeJs](https://nodejs.org/en/download/)
 
-### SP
 
-```bash
-npm install express express-session passport passport-saml body-parser cookie-parser --save
+### Download
+
+You can download `SAML x509 authentication flow` by cloning this git repository:
+
+```
+git clone ...
 ```
 
-generate SP keys and certificates for decryption and signing
+
+### Usage
+
+###### Burp configuration
+
+- Start Burp
+- Setup your browser to use Burp as proxy ([Chrome](https://portswigger.net/support/configuring-chrome-to-work-with-burp), [IE](https://portswigger.net/support/configuring-internet-explorer-to-work-with-burp), [Firefox](https://portswigger.net/support/configuring-firefox-to-work-with-burp), [Safari](https://portswigger.net/support/configuring-safari-to-work-with-burp))
+- Add `*.p12` certificate files available in the `cerfificates` folder to Burp under `User options` -> `TLS` -> `Client TLS Certificates`. Password is `gelato`
+
+###### Service deployment
+
+- IdP
+  - Open a terminal and reach the folder `eidas-idp`
+  - Run `npm install` and then `node app`
 
 
-## Links
+- ASPSP
+  - Open a terminal and reach the folder `aspsp`
+  - Run `npm install` and then `node app`
 
-Huge thanks to Jeffry Houser & team for the [SP setup](https://medium.com/disney-streaming/setup-a-single-sign-on-saml-test-environment-with-docker-and-nodejs-c53fc1a984c9)!
 
+- ASPSP
+  - Open a terminal and reach the folder `csp`
+  - Run `npm install` and then `node app`
+
+
+- OCSP server
+  - Open a terminal and reach the folder `ocsp-server`
+  - Run `npm install` and then `node app`
+
+
+Visit `localhost:8888` to use ASPSP and `localhost:8889` to use CSP

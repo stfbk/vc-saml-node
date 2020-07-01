@@ -1,0 +1,13 @@
+{
+	"keyType": "ec",
+	"keyBits": 384,
+	"distinguished_name": {
+		"C": "IT",
+		"ST": "IT",
+		"L": "Rome",
+		"O": "Contracting Services Provider",
+		"OU": "CSP Test Unit",
+		"CN": "CSP",
+		"emailAddress": "CSP@imail.it"
+	}
+}

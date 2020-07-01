@@ -1,0 +1,93 @@
+
+<div class="col-md-8 col-md-offset-2">
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <form action="{{paths.SIGN_IN}}" class="form-horizontal form-profile" method="post" role="form">
+        <input class="form-control" id="userName" name="userName" value="{{user.nameId}}" type="hidden">
+        <input class="form-control" id="nameIdFormat" name="nameIdFormat" value="urn:oasis:names:tc:SAML:2.0:nameid-format:transient" type="hidden">
+        <div class='form-profile-attributes'>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-id-card-o"><span>Attribute Statements</span></i></h3>
+            </div>
+            <div class="panel-body">
+              {{#each metadata}}
+              <div class="form-group">
+                <label class="col-sm-3 control-label" for="{{this.id}}">{{this.displayName}}</label>
+                <div class="col-sm-9">
+                  {{#if this.options}}
+                  <select class="form-control" id="{{this.id}}" name="{{this.id}}">
+                  {{#each this.options}}
+                    <option>
+                      {{this}}
+                    </option>
+                  {{/each}}
+                  </select>
+                  {{else}}
+                    {{#if this.multiValue}}
+                      <input class="form-control" id="{{this.id}}" name="{{this.id}}" placeholder="Attribute value" type="text" value="{{getProperty this.id ../user}}" data-role="tagsinput">
+                    {{else}}
+                      <input class="form-control" id="{{this.id}}" name="{{this.id}}" placeholder="Attribute value" type="text" value="{{getProperty this.id ../user}}" readonly>
+                    {{/if}}
+                  {{/if}}
+                </div>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-12 text-right">
+              <button id="btn-sign-in" class="btn btn-primary input-xlarge" type="submit"><span>Authorize</span></i></button>
+              <a href="{{authnRequest.issuer}}" class="btn btn-default input-xlarge">Block</a>
+            </div>
+          </div>{{#if authnRequest.id}} <input name="_authnRequest" type='hidden' value='{{serialize authnRequest}}'> {{/if}}
+        </div>
+      </form>
+
+    </div><!-- /.form-profile-attributes -->
+  </div>
+</div>
+
+{{#extend "scripts"}}
+<script>
+$(document).ready(function() {
+   $("#nameIdFormat option").filter(function() {
+       return $(this).text() == '{{user.nameIdFormat}}';
+   }).prop('selected', true);
+
+   $('#btn-show-attribute-modal').click(function(e) {
+     e.preventDefault();
+     var $modal = $('#modal-attribute');
+     $modal.find('input[type=text]').val('');
+     $modal.modal('show');
+   });
+
+  $('#btn-sign-out').click(function(e) {
+    e.preventDefault();
+    window.location.href = '{{paths.SIGN_OUT}}';
+  });
+
+   $('#modal-attribute .btn-primary').click(function(e) {
+     e.preventDefault();
+     var $form = $("#modal-attribute form");
+     $form.validate();
+     if ($form.valid()) {
+       $.ajax({
+         type: "POST",
+         url: '{{paths.METADATA}}',
+         data: $("#modal-attribute form").serialize(),
+         success: function() {
+           $('#modal-attribute').modal('hide');
+           window.location.reload();
+         },error: function(xhr, textStatus, errorMessage) {
+          console.log(errorMessage);
+         }
+       });
+     }
+   })
+
+   $('a[data-toggle=collapse]').click(function() {
+     $(this).find('i.indicator').toggleClass('fa-chevron-circle-down fa-chevron-circle-up');
+   });
+});
+</script>{{/extend}}
