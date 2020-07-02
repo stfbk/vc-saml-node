@@ -67,10 +67,10 @@ router.post('/acs',
 	passport.authenticate('samlStrategy'),
 	function (req, res) {
 		//TODO: Fix this
-var bankingInformation = {
-	id: req.user.fiscalNumber,
-	iban: 'IT60 X054 2811 1010 0000 0123 456'
-};
+	var bankingInformation = {
+		id: req.user.fiscalNumber,
+		iban: 'IT60 X054 2811 1010 0000 0123 456'
+	};
 		console.log('-----------------------------');
 		console.log('login call back dumps');
 		console.log(req.user);

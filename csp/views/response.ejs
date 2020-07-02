@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contracting Services Provider</title>
+  <link href="/dist/fontawesome/css/font-awesome.css" rel="stylesheet">
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <link href="/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Static navbar -->
+
+  <div class="form-group row">
+    <div class="col-sm-6 ">
+      <div class="textLeft">
+        <img src="img/st.png" id="stImg" onerror="this.src='/img/st.png'; this.onerror=null;" alt="ST Logo">
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="textRight">
+        <img src="img/fbk.png" id="fbkImg" width="260" onerror="this.src='/img/fbk.png'; this.onerror=null;" alt="FBK Logo">
+      </div>
+    </div>
+  </div>
+
+  <div id="mainComp">
+    <% if(result){ %>
+        <h2>Your account has been successfully verified.</h2>
+        <table id="attributes-table" class="table">
+            <tr>
+              <th class="defaultSize textRight">Server name:</th>
+              <td class="defaultSize textLeft"><%= issuer %></td>
+            </tr>
+            <tr>
+              <th class="defaultSize textRight">Fiscal Number:</th>
+              <td class="defaultSize textLeft"><%= fiscalNumber %></td>
+            </tr>
+            <tr>
+              <th class="defaultSize textRight">Surname:</th>
+              <td class="defaultSize textLeft"><%= familyName %></td>
+            </tr>
+            <tr>
+              <th class="defaultSize textRight">Name:</th>
+              <td class="defaultSize textLeft"><%= name %></td>
+            </tr>
+            <tr>
+              <th class="defaultSize textRight">Date of Birth:</th>
+              <td class="defaultSize textLeft"><%= dateOfBirth %></td>
+            </tr>
+            <tr>
+                <th class="defaultSize textRight">IBAN:</th>
+                <td class="defaultSize textLeft"><%= iban %></td>
+              </tr>
+          </table>
+      <% } else{ %>  
+        <h2>There was an error processing your account credentials. Please, try again.</h2>
+     <% } %>
+     
+</div>
+
+</body>
+
+<script src="/dist/jquery/jquery.min.js"></script>
+<script src="/dist/jquery-validation/jquery.validate.min.js"></script>
+<script src="/dist/bootstrap/js/bootstrap.min.js"></script>
+<script src="/dist/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+<script language="javascript" type="text/javascript">
+  function submitDetailsForm() {
+    fetch('http://localhost:5000/uploadVerifiableCredential', {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json'
+			},
+			body: formData
+			}).then(response => {
+				console.log(response)
+				if(response.status.toString() == "200") {
+					this.setState({verResult: 1})
+				} else {
+					this.setState({verResult: 2})
+				}
+			})
+  }
+</script>
+
+
+</html>

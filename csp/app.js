@@ -72,7 +72,9 @@ router.post('/acs',
 		console.log('login call back dumps');
 		console.log(req.user);
 		console.log('-----------------------------');
-		res.render('home', req.user)
+		var data = req.user;
+		data.result = true;
+		res.render('home', data)
 	}
 );
 
@@ -88,12 +90,23 @@ router.get('/metadata',
 	}
 );
 
-router.post('/uploadVerifiableCredential', upload.single('file'), function(req, res) {
-	console.log(req.body)
-	var verifiableCredential = JSON.parse(fs.readFileSync(req.file.path));
+router.post('/uploadVerifiableCredential', upload.single('file'),
+	async function (req, res) {
+		console.log('------ Uploading Verifiable Credential -----');
 
-	verifier.verifyVerifiableCredential(verifiableCredential, req.user.fiscalNumber) ? res.sendStatus(200) : res.sendStatus(500);
-})
+		const verifiableCredential = JSON.parse(fs.readFileSync(req.file.path));
+		const result = await verifier.verifyVerifiableCredential(verifiableCredential, req.user.fiscalNumber);
+		var data = req.user;
+		data.iban = verifiableCredential.credentialSubject.iban;
+		data.result = result;
+
+		console.log(result);
+		console.log(result);
+		console.log(result);
+
+		result === true ? res.render('response', data) : res.render('home', data);
+	}
+);
 
 
 // passport setup

@@ -27,10 +27,16 @@
     </div>
   </div>
 
-
+  
 
 
   <div id="mainComp">
+    <% if(!result){ %>
+      <div class="alert alert-danger" role="alert">
+        <span>There was an error processing your account credentials. Please, try again.</span>
+      </div>
+    <% } %>
+
     <h1>Welcome <%= name %></h1>
     <span>We got the following information from your Identity Provider:</span>
 
@@ -62,7 +68,7 @@
         <label for="inputPassword3" class="col-sm-9">Upload a verifiable credential with your IBAN in order to verify your account:</label>
         <div class="col-sm-3">
           <input type="hidden" name="MAX_FILE_SIZE" value="3000" />
-          <input name="file" type="file" class="" id="file">
+          <input name="file" type="file" class="" id="file" accept="application/JSON">
         </div>
       </div>
       <div class="form-group">
