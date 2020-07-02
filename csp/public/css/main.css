@@ -134,6 +134,14 @@ i.fa span {
 	text-align: center;
 }
 
+#mainComp {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+	transform: translate(-50%, -50%);
+}
+
 #stImg, #fbkImg {
 	width: 20%;
 	margin-left: 5%;

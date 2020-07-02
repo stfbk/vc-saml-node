@@ -4,6 +4,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+var multer  = require('multer');
 
 
 // SAML
@@ -13,6 +14,10 @@ const saml = require('passport-saml');
 const https = require('https');
 const fs = require('fs');
 
+//JS Import
+const verifier = require('./verifier.js');
+//TODO
+var upload = multer({ dest: './public/data/uploads/' });
 
 // app setup
 
@@ -82,6 +87,14 @@ router.get('/metadata',
 		);
 	}
 );
+
+router.post('/uploadVerifiableCredential', upload.single('file'), function(req, res) {
+	console.log(req.body)
+	var verifiableCredential = JSON.parse(fs.readFileSync(req.file.path));
+
+	verifier.verifyVerifiableCredential(verifiableCredential, req.user.fiscalNumber) ? res.sendStatus(200) : res.sendStatus(500);
+})
+
 
 // passport setup
 
