@@ -55,7 +55,14 @@
         <th class="defaultSize textRight">Date of Birth:</th>
         <td class="defaultSize textLeft"><%= dateOfBirth %></td>
       </tr>
+      <tr>
+        <th class="defaultSize textRight">IBAN:</th>
+        <td class="defaultSize textLeft"><%= iban %></td>
+      </tr>
     </table>
+    <button class="btn btn-info" onClick="window.open('https://localhost:8888/downloadVerifiableCredential');" >
+      Download Verifiable Credential
+    </button>
   </div>
 
 

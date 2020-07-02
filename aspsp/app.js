@@ -15,9 +15,10 @@ const saml = require('passport-saml');
 const https = require('https');
 const fs = require('fs');
 
+// JS Import
+const issuer = require('./issuer.js');
 
 // app setup
-
 const app = express();
 const router = express.Router();
 app.use(cookieParser());
@@ -65,13 +66,44 @@ router.post('/acs',
 	},
 	passport.authenticate('samlStrategy'),
 	function (req, res) {
+		//TODO: Fix this
+var bankingInformation = {
+	id: req.user.fiscalNumber,
+	iban: 'IT60 X054 2811 1010 0000 0123 456'
+};
 		console.log('-----------------------------');
 		console.log('login call back dumps');
 		console.log(req.user);
 		console.log('-----------------------------');
-		res.render('home', req.user)
+		var user = req.user;
+		user.iban = bankingInformation.iban;
+		res.render('home', user)
 	}
 );
+
+router.get('/downloadVerifiableCredential', async (req, res) => {
+	//TODO: Fix this
+	var bankingInformation = {
+		id: req.user.fiscalNumber,
+		iban: 'IT60 X054 2811 1010 0000 0123 456'
+	};
+
+	var fileId = bankingInformation.id;
+
+	// TODO: Fix this hot mess about double VC
+	if(!fs.existsSync('/tmp/verifiableCredential' + fileId + '.json')) {
+		var randomNumber = Math.floor((Math.random() * 9999999999) + 999999999);
+	var verifiableCredential = await issuer.generateVerifiableCredential(bankingInformation);
+	var string = fs.writeFileSync('/tmp/verifiableCredential' + fileId + '.json', JSON.stringify(verifiableCredential), function(err) {
+		if(err) {
+			return console.log(err);
+		}
+	}); 
+	console.log(verifiableCredential);
+	}
+	
+	res.download('/tmp/verifiableCredential' + fileId + '.json', 'VerifiableCredential.json');
+  })
 
 router.get('/metadata',
 	function(req, res) {
