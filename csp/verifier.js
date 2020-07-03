@@ -5,15 +5,11 @@ const fs = require( 'fs' );
 const ec = new require('elliptic').ec('secp256k1');
 const forge = require('node-forge');
 const {util: {binary: {base58}}} = forge;
-const Secp256k1KeyPair = require('secp256k1-key-pair');
 const EcdsaSepc256k1Signature2019 = require('ecdsa-secp256k1-signature-2019');
 
 //Import documents and contexts
 const issuer = require('./credentials/did.json');
 var bankingContext = require('./credentials/context-schema-degree');
-var credentialTemplate = require('./credentials/credential-template');
-
-const date = new Date();
 
 const documentLoader = extendContextLoader(async url => {
 	if(url === 'http://localhost:8080/degreeCredentialContext/v1') {
@@ -36,10 +32,10 @@ const documentLoader = extendContextLoader(async url => {
 	if(url.startsWith('did:example:') && url.includes('#key')) {
 		//TODO: Fetch information directly from the issuer DID instead of manually building it
 		doc = {
-			id: 'did:example:credential-issuer#key0',
-			type: 'EcdsaSecp256k1VerificationKey2019',
-			controller: 'did:example:credential-issuer',
-			publicKeyBase58: 'yeSu7ME3JNpGqDbaPvYBPfJ9DkigXzH26ou5g3q3Rjc5'
+			id: issuer.publicKey[0].id,
+			type: issuer.publicKey[0].type,
+			controller: issuer.id,
+			publicKeyBase58: issuer.publicKey[0].publicKeyBase58
 		}
 		doc['@context'] = 'https://w3id.org/security/v2';
 		return {
