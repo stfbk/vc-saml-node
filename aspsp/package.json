@@ -9,6 +9,7 @@
     "eidas"
   ],
   "dependencies": {
+    "better-sqlite3": "^7.1.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "ecdsa-secp256k1-signature-2019": "^1.0.1",
@@ -21,6 +22,7 @@
     "passport": "^0.4.1",
     "passport-saml": "^1.3.3",
     "secp256k1-key-pair": "^1.1.0",
+    "sqlite3": "^5.0.0",
     "vc-js": "^0.6.4"
   }
 }

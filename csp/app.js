@@ -16,8 +16,7 @@ const fs = require('fs');
 
 //JS Import
 const verifier = require('./verifier.js');
-//TODO
-var upload = multer({ dest: './public/data/uploads/' });
+var upload = multer({ dest: '/tmp' });
 
 // app setup
 

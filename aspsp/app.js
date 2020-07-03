@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-
 // SAML
 const passport = require('passport');
 const saml = require('passport-saml');
@@ -17,6 +16,10 @@ const fs = require('fs');
 
 // JS Import
 const issuer = require('./issuer.js');
+const database = require('./dbHandler.js');
+
+// Local variables
+var clientIban = null;
 
 // app setup
 const app = express();
@@ -81,20 +84,17 @@ router.post('/acs',
 	}
 );
 
+
 router.get('/downloadVerifiableCredential', async (req, res) => {
-	//TODO: Fix this
 	var bankingInformation = {
 		id: req.user.fiscalNumber,
-		iban: 'IT60 X054 2811 1010 0000 0123 456'
+		iban: database.getName(req.user.fiscalNumber)
 	};
 
-	var fileId = bankingInformation.id;
-
-	// TODO: Fix this hot mess about double VC
-	if(!fs.existsSync('/tmp/verifiableCredential' + fileId + '.json')) {
+	if(!fs.existsSync('/tmp/verifiableCredential' + req.user.fiscalNumber + '.json')) {
 		var randomNumber = Math.floor((Math.random() * 9999999999) + 999999999);
 	var verifiableCredential = await issuer.generateVerifiableCredential(bankingInformation);
-	var string = fs.writeFileSync('/tmp/verifiableCredential' + fileId + '.json', JSON.stringify(verifiableCredential), function(err) {
+	var string = fs.writeFileSync('/tmp/verifiableCredential' + req.user.fiscalNumber + '.json', JSON.stringify(verifiableCredential), function(err) {
 		if(err) {
 			return console.log(err);
 		}
@@ -102,7 +102,7 @@ router.get('/downloadVerifiableCredential', async (req, res) => {
 	console.log(verifiableCredential);
 	}
 	
-	res.download('/tmp/verifiableCredential' + fileId + '.json', 'VerifiableCredential.json');
+	res.download('/tmp/verifiableCredential' + req.user.fiscalNumber + '.json', 'VerifiableCredential.json');
   })
 
 router.get('/metadata',
@@ -118,7 +118,6 @@ router.get('/metadata',
 );
 
 // passport setup
-
 passport.serializeUser(function(user, done) {
 	console.log('-----------------------------');
 	console.log('serialize user');
@@ -162,9 +161,3 @@ const httpsOptions = {
 https.createServer(httpsOptions, app).listen(app.get('port'), function() {
     console.log('ASPSP webapp is running on port', app.get('port'));
 });
-//
-// // start server
-//
-// const server = app.listen(8888, function () {
-// 	console.log(`Listening on port ${server.address().port}`)
-// });
