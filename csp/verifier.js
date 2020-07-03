@@ -39,7 +39,7 @@ const documentLoader = extendContextLoader(async url => {
 			id: 'did:example:credential-issuer#key0',
 			type: 'EcdsaSecp256k1VerificationKey2019',
 			controller: 'did:example:credential-issuer',
-			publicKeyBase58: 'jwUAVH4UAmpem7X1APjWAwCDMNvqMuYxfk9tcBsC8hqW'
+			publicKeyBase58: 'yeSu7ME3JNpGqDbaPvYBPfJ9DkigXzH26ou5g3q3Rjc5'
 		}
 		doc['@context'] = 'https://w3id.org/security/v2';
 		return {

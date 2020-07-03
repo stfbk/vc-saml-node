@@ -38,14 +38,12 @@ async function fetchPublicKeyIssuerBase58() {
 	return publicKeyBase58;
 }
 
-var issuer_suite = null;
-
 //Create issuer Secp256k1KeyPair for issuing verifiable credentials
 async function createSuite() {
 	privateKeyBase58 = await fetchPrivateKeyIssuer();
 	publicKeyBase58 = await fetchPublicKeyIssuerBase58();
 
-	var issuer_suite = new EcdsaSepc256k1Signature2019({
+	return issuer_suite = new EcdsaSepc256k1Signature2019({
 		key: new Secp256k1KeyPair(
 			{
 			id: issuer.publicKey[0].id,
@@ -54,8 +52,6 @@ async function createSuite() {
 			})
 	  });  
 }
-
-createSuite();
 
 const documentLoader = extendContextLoader(async url => {
 	if(url === 'http://localhost:8080/degreeCredentialContext/v1') {
@@ -118,6 +114,7 @@ function buildCredential(bankingInformation) {
 }
 
 async function generateVerifiableCredential(bankingInformation) {
+	var issuer_suite = await createSuite();
 	var credential = buildCredential(bankingInformation);
 	console.log(credential)
 	const signedVC = await vc.issue({credential, suite:issuer_suite, documentLoader});
