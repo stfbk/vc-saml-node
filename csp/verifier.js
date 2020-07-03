@@ -4,13 +4,13 @@ const {defaultDocumentLoader} = vc;
 const fs = require( 'fs' );
 const ec = new require('elliptic').ec('secp256k1');
 const forge = require('node-forge');
+const request = require("request-promise");
 const {util: {binary: {base58}}} = forge;
 const EcdsaSepc256k1Signature2019 = require('ecdsa-secp256k1-signature-2019');
 
 //Import documents and contexts
-const issuer = require('./credentials/did.json');
 var bankingContext = require('./credentials/context-schema-degree');
-
+var issuer = null;
 const documentLoader = extendContextLoader(async url => {
 	if(url === 'http://localhost:8080/degreeCredentialContext/v1') {
 		return {
@@ -20,17 +20,8 @@ const documentLoader = extendContextLoader(async url => {
 		};
 	}
 
-	if(url === 'did:example:credential-issuer') {
-		return {
-			contextUrl: null,
-			documentUrl: url,
-			document: issuer
-		};
-	}
-
 	//Create public material key from the DID
-	if(url.startsWith('did:example:') && url.includes('#key')) {
-		//TODO: Fetch information directly from the issuer DID instead of manually building it
+	if(url.startsWith('key:example:') && url.includes('#key')) {
 		doc = {
 			id: issuer.publicKey[0].id,
 			type: issuer.publicKey[0].type,
@@ -60,11 +51,34 @@ function verifySubjectID(credential, clientId) {
 	return true;
 }
 
+async function getControllerDocument(issuer) {
+	console.log('---- Getting Issuer ----')
+
+	return await request({
+		method: "GET",
+		uri: issuer,
+		headers: {
+		  "Content-Type": "application/json"
+		},
+		agentOptions: {
+		  ca: fs.readFileSync("../certificates/CA_IT.crt")
+		}
+	  }, function(error, httpResponse, body) {
+		  return body;
+	  });
+};
+
+
 async function verifyVerifiableCredential(credential, clientId) {
+
+	var responseBody = await getControllerDocument(credential.issuer)
+
+	issuer = JSON.parse(responseBody);
+
 	const verifySuite = new EcdsaSepc256k1Signature2019();
-    console.log("----- Verifying Verifiable Credential ------");
+	console.log("----- Verifying Verifiable Credential ------");
 	if(verifySubjectID(credential, clientId) && verifyIssuer(credential)) {
-        console.log("------- Client verified -------")
+		console.log("------- Client verified -------")
 		result = await vc.verifyCredential({credential, documentLoader, suite:verifySuite, controller:issuer});
 		console.log(JSON.stringify(result, null, 2))
 		return result.verified;

@@ -17,6 +17,7 @@ const fs = require('fs');
 // JS Import
 const issuer = require('./issuer.js');
 const database = require('./dbHandler.js');
+const controllerDocument = require('./credentials/did.json');
 
 // Local variables
 var clientIban = null;
@@ -48,6 +49,12 @@ app.use('/', express.static('public'));
 router.get('/',
 	function(req, res) {
 		res.render('login');
+	}
+);
+
+router.get('/issuer',
+	function(req, res) {
+		res.send(controllerDocument);
 	}
 );
 

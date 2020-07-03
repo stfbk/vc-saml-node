@@ -18,40 +18,51 @@ var credentialTemplate = require('./credentials/credential-template');
 const date = new Date();
 
 async function fetchPrivateKeyIssuer() {
-	const {stdout, stderr} = await exec('openssl ec -in ./certs/ASPSP_nonRepudiation.key -outform DER|tail -c +8|head -c 32|xxd -p -c 32');
+	//TODO get private key from pem file
+	// Get PrivK from non-rcd
+	var privateKeyByte = fs.readFileSync('./keys/private.txt');
+	const {stdout, stderr} = await exec('openssl ec -in tmp_private.txt -outform DER|tail -c +8|head -c 32|xxd -p -c 32');
+	console.log(stdout);
 	key = ec.keyFromPrivate(stdout,'hex');
     const privateKeyBase58 = base58.encode(new Uint8Array(
 		key.getPrivate().toArray()));
 
-	console.log("PRIVATE KEY BASE 58:", privateKeyBase58);
+	console.log(privateKeyBase58);
 	return privateKeyBase58;
 }
 
 async function fetchPublicKeyIssuerBase58() {
-	const {stdout, stderr} = await exec('openssl x509 -in ./certs/ASPSP_nonRepudiation.crt -pubkey -noout| openssl enc -base64 -d |tail -c 65|xxd -p -c 65');
+	var privateKeyByte = fs.readFileSync('./keys/public.txt');
+	const {stdout, stderr} = await exec('openssl ec -in tmp_private.txt -pubout -outform DER|tail -c 65|xxd -p -c 65');
+	
+	console.log(stdout);
 	key = ec.keyFromPublic(stdout,'hex');
 	const pubPoint = key.getPublic();
     const publicKeyBase58 = base58.encode(new Uint8Array(
 	  pubPoint.encodeCompressed()));
 	  
-	  console.log("PUBLIC KEY BASE 58:", publicKeyBase58)
+	console.log(publicKeyBase58);
 	return publicKeyBase58;
 }
+
+var issuer_suite = null;
 
 //Create issuer Secp256k1KeyPair for issuing verifiable credentials
 async function createSuite() {
 	privateKeyBase58 = await fetchPrivateKeyIssuer();
 	publicKeyBase58 = await fetchPublicKeyIssuerBase58();
 
-	return issuer_suite = new EcdsaSepc256k1Signature2019({
+	var issuer_suite = new EcdsaSepc256k1Signature2019({
 		key: new Secp256k1KeyPair(
 			{
 			id: issuer.publicKey[0].id,
-			privateKeyBase58: privateKeyBase58,
+			privateKeyBase58: '5d15bfa5deaf48e67fa547ac8ad559a6c6f755867b1bdd82dc35c5697eab631e',
 			publicKeyBase58: issuer.publicKey[0].publicKeyBase58
 			})
 	  });  
 }
+
+createSuite();
 
 const documentLoader = extendContextLoader(async url => {
 	if(url === 'http://localhost:8080/degreeCredentialContext/v1') {
@@ -62,7 +73,7 @@ const documentLoader = extendContextLoader(async url => {
 		};
 	}
 
-	if(url === 'https://localhost:8888/issuer') {
+	if(url === 'did:example:credential-issuer') {
 		return {
 			contextUrl: null,
 			documentUrl: url,
@@ -71,7 +82,9 @@ const documentLoader = extendContextLoader(async url => {
 	}
 
 	//Create public material key from the DID
-	if(url.startsWith('key:example:') && url.includes('#key')) {		
+	if(url.startsWith('did:example:') && url.includes('#key')) {
+		//TODO: Fetch information directly from the issuer DID instead of manually building it
+		
 		doc = {
 			id: issuer.publicKey[0].id,
 			type: issuer.publicKey[0].type,
@@ -112,7 +125,6 @@ function buildCredential(bankingInformation) {
 }
 
 async function generateVerifiableCredential(bankingInformation) {
-	var issuer_suite = await createSuite();
 	var credential = buildCredential(bankingInformation);
 	console.log(credential)
 	const signedVC = await vc.issue({credential, suite:issuer_suite, documentLoader});
