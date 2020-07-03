@@ -7,11 +7,6 @@ function getName(clientId){
     return row.iban;
 };
 
-function getCredential(iban){
-    var row = db.prepare('SELECT IBAN iban FROM CLIENTS WHERE ID = ?').get(clientId);
-    return row.iban;
-};
-
 
 module.exports = {
     getName
