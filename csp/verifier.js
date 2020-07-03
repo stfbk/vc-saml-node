@@ -39,11 +39,6 @@ const documentLoader = extendContextLoader(async url => {
 	return defaultDocumentLoader(url);
   });
 
-function verifyIssuer() {
-	//Should go the issuer URI and verify the presence of a certificate
-	return true;
-}
-
 function verifySubjectID(credential, clientId) {
 	if(clientId != credential.credentialSubject.clientId)
 		throw new Error("Client ID doesn't correspond to the ID on the credential" + clientId + credential.credentialSubject.clientId);
@@ -77,7 +72,7 @@ async function verifyVerifiableCredential(credential, clientId) {
 
 	const verifySuite = new EcdsaSepc256k1Signature2019();
 	console.log("----- Verifying Verifiable Credential ------");
-	if(verifySubjectID(credential, clientId) && verifyIssuer(credential)) {
+	if(verifySubjectID(credential, clientId)) {
 		console.log("------- Client verified -------")
 		result = await vc.verifyCredential({credential, documentLoader, suite:verifySuite, controller:issuer});
 		console.log(JSON.stringify(result, null, 2))
