@@ -4,6 +4,8 @@ const {defaultDocumentLoader} = vc;
 const fs = require( 'fs' );
 const ec = new require('elliptic').ec('secp256k1');
 const forge = require('node-forge');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const {util: {binary: {base58}}} = forge;
 const Secp256k1KeyPair = require('secp256k1-key-pair');
 const EcdsaSepc256k1Signature2019 = require('ecdsa-secp256k1-signature-2019');
@@ -15,26 +17,45 @@ var credentialTemplate = require('./credentials/credential-template');
 
 const date = new Date();
 
-function fetchPrivateKeyIssuer() {
-	//TODO get private key from pem file
-	// Get PrivK from non-r
-	var privateKeyByte = fs.readFileSync('keys/private.txt');
-	key = ec.keyFromPrivate(privateKeyByte.toString(),'hex');
+async function fetchPrivateKeyIssuer() {
+	const {stdout, stderr} = await exec('openssl ec -in ./certs/ASPSP_nonRepudiation.key -outform DER|tail -c +8|head -c 32|xxd -p -c 32');
+	key = ec.keyFromPrivate(stdout,'hex');
     const privateKeyBase58 = base58.encode(new Uint8Array(
 		key.getPrivate().toArray()));
 
+	console.log("PRIVATE KEY BASE 58:", privateKeyBase58);
 	return privateKeyBase58;
 }
 
+async function fetchPublicKeyIssuerBase58() {
+	const {stdout, stderr} = await exec('openssl x509 -in ./certs/ASPSP_nonRepudiation.crt -pubkey -noout| openssl enc -base64 -d |tail -c 65|xxd -p -c 65');
+	key = ec.keyFromPublic(stdout,'hex');
+	const pubPoint = key.getPublic();
+    const publicKeyBase58 = base58.encode(new Uint8Array(
+	  pubPoint.encodeCompressed()));
+	  
+	  console.log("PUBLIC KEY BASE 58:", publicKeyBase58)
+	return publicKeyBase58;
+}
+
+var issuer_suite = null;
+
 //Create issuer Secp256k1KeyPair for issuing verifiable credentials
-const issuer_suite = new EcdsaSepc256k1Signature2019({
-	key: new Secp256k1KeyPair(
-		{
-		id: issuer.publicKey[0].id,
-		privateKeyBase58: fetchPrivateKeyIssuer(),
-		publicKeyBase58: issuer.publicKey[0].publicKeyBase58
-		})
-  });
+async function createSuite() {
+	privateKeyBase58 = await fetchPrivateKeyIssuer();
+	publicKeyBase58 = await fetchPublicKeyIssuerBase58();
+
+	var issuer_suite = new EcdsaSepc256k1Signature2019({
+		key: new Secp256k1KeyPair(
+			{
+			id: issuer.publicKey[0].id,
+			privateKeyBase58: privateKeyBase58,
+			publicKeyBase58: issuer.publicKey[0].publicKeyBase58
+			})
+	  });  
+}
+
+createSuite();
 
 const documentLoader = extendContextLoader(async url => {
 	if(url === 'http://localhost:8080/degreeCredentialContext/v1') {
@@ -94,17 +115,6 @@ function buildCredential(bankingInformation) {
 
     console.log(credential)
 	return credential;
-}
-
-function fetchPublicKeyIssuerBase58() {
-	//TODO 
-	var publicKeyByte = fs.readFileSync('keys/public.txt');
-	key = ec.keyFromPublic(publicKeyByte.toString(),'hex');
-	const pubPoint = key.getPublic();
-    const publicKeyBase58 = base58.encode(new Uint8Array(
-      pubPoint.encodeCompressed()));
-
-	return publicKeyBase58;
 }
 
 async function generateVerifiableCredential(bankingInformation) {
