@@ -6,7 +6,7 @@ function getName(clientId){
     console.log ("---- Fetching client ----")
     var row = db.prepare('SELECT IBAN iban FROM CLIENTS WHERE ID = ?').get(clientId);
     if(row == null)
-        throw new Error("The authorised user is not a client of the bank");
+        throw new Error("The authenticated user is not a client of the bank");
     return row.iban;
 };
 
