@@ -48,7 +48,8 @@ app.use('/', express.static('public'));
 
 router.get('/',
 	function(req, res) {
-		res.render('login');
+		var err = null;
+		res.render('login', err);
 	}
 );
 
@@ -76,10 +77,17 @@ router.post('/acs',
 	},
 	passport.authenticate('samlStrategy'),
 	function (req, res) {
-		//TODO: Fix this
+
+		try {
+			var dbIban = database.getName(req.user.fiscalNumber)
+		} catch(err) {
+			res.render('login', {error: err});
+		}
+		
+
 	var bankingInformation = {
 		id: req.user.fiscalNumber,
-		iban: 'IT60 X054 2811 1010 0000 0123 456'
+		iban: dbIban
 	};
 		console.log('-----------------------------');
 		console.log('login call back dumps');
@@ -93,10 +101,19 @@ router.post('/acs',
 
 
 router.get('/downloadVerifiableCredential', async (req, res) => {
+
+	try {
+		var dbIban = database.getName(req.user.fiscalNumber);
+	} catch(err) {
+		res.render('login', {error: err});
+	}
+	if(dbIban)
 	var bankingInformation = {
 		id: req.user.fiscalNumber,
-		iban: database.getName(req.user.fiscalNumber)
+		iban: dbIban
 	};
+
+	
 
 	if(!fs.existsSync('/tmp/verifiableCredential' + req.user.fiscalNumber + '.json')) {
 		var randomNumber = Math.floor((Math.random() * 9999999999) + 999999999);

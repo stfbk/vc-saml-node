@@ -31,7 +31,14 @@
 
 
 
-  <div class="textCenter">
+  <div class="textCenter" id="mainComp">
+
+      <% if(!(typeof error == "undefined")){ %>
+        <div class="alert alert-danger" role="alert">
+          <span><%= error.message %></span>
+        </div>
+      <% } %>
+
       <h1>Account Servicing Payment Services Provider</h1>
 
       <p>You can access this service using the X509 certificate. </p>

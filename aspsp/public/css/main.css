@@ -123,6 +123,13 @@ i.fa span {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
+#mainComp {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 75%;
+	transform: translate(-50%, -50%);
+}
 
 .textRight {
 	text-align: right;
