@@ -4,26 +4,26 @@
 
 To be able to run this project you will need to install:
 - a browser capable of loading certificates (Chrome, IE, Firefox, Safari)
-- [NodeJs](https://nodejs.org/en/download/)
-
+- [NodeJs](https://nodejs.org/en/download/) and node package manager (npm)
+- sqlite3
 
 ## Download
 
 You can download `SAML x509 authentication flow` by cloning this git repository:
 
-```
+```bash
 git clone ...
 ```
 
 
-## Set-up
+## Set-up - linux
 
-The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3 "Tricia" and 20 "Ulya" - Cinnamon (64-bit)
+The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3 "Tricia" and 20 "Ulya" - Cinnamon (64-bit).
 
-### install nodejs
+### install requirements
 
 ```bash
-sudo apt install nodejs
+sudo apt install nodejs npm sqlite3
 ```
 
 ### add certificates to the browser
@@ -34,7 +34,7 @@ sudo apt install nodejs
 - Navigate to `chrome://settings/certificates` -- or manually go to the browser's `Settings` -> `Privacy and security` -> `More` -> `Manage Certificates`
 - Under the `Your certificates` tab, click `Import`
 - Select one of the `eID_*.p12` files available in the `cerfificates` folder.
-- When prompted for a password, read it from the corresponding `eID_*.pass.p12` text file.
+- When prompted for a password, read it from the corresponding `eID_*.p12.pass` text file.
 
 In Mint 20, chromium is not installed by default. You can install it via `sudo apt install chromium`.
 
@@ -45,12 +45,12 @@ In Mint 20, chromium is not installed by default. You can install it via `sudo a
 - Click on `View Certificates`
 - Under the `Your Certificates` tab, click `Import`
 - Select one of the `eID_*.p12` files available in the `cerfificates` folder.
-- When prompted for a password, read it from the corresponding `eID_*.pass.p12` text file.
+- When prompted for a password, read it from the corresponding `eID_*.p12.pass` text file.
 
 
 ### Service deployment
 
-- IdP
+- IDP
   - Open a terminal and reach the folder `eidas-idp`
   - Run `npm install` and then `node app`
 
@@ -73,4 +73,11 @@ In Mint 20, chromium is not installed by default. You can install it via `sudo a
 Visit `localhost:8888` to use ASPSP and `localhost:8889` to use CSP
 
 ## Onboarding and Verifiable Credential flow
+
+We have provided three eID certificates to test different cases:
+
+- `eID_IT_FRRFNC[etc]`
+- `eID_IT_GNTCSR[etc]` has an expired certificate and should not be able to successfully authenticate at the IDP
+- `eID_IT_LNRMNA[etc]`
+
 
