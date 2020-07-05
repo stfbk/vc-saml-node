@@ -8,15 +8,6 @@ To be able to run this project you will need to install:
 - [NodeJs](https://nodejs.org/en/download/) and node package manager (npm)
 - sqlite3
 
-## Download
-
-You can download `SAML x509 authentication flow` by cloning this git repository:
-
-```bash
-git clone ...
-```
-
-
 ## Set-up - linux
 
 The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3 "Tricia" - Cinnamon (64-bit).
@@ -24,7 +15,8 @@ The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3
 ### Install requirements
 
 ```bash
-sudo apt install nodejs npm sqlite3
+sudo apt install nodejs npm sqlite3 git
+git clone git@github.com:stfbk/vc-saml-node.git
 ```
 
 ### Add certificates to the browser
@@ -107,3 +99,15 @@ After performing all the steps in Setup:
 
 - VCs are saved as plain `.json` files to the local drive. A credential management client is not the focus of this proof of concept.
 
+## License
+Copyright 2020, Fondazione Bruno Kessler
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+```
+http://www.apache.org/licenses/LICENSE-2.0
+```
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+Developed within [Security & Trust](https://stfbk.github.io/) Research Unit at [Fondazione Bruno Kessler](https://www.fbk.eu/en/) (Italy)
