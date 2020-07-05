@@ -559,6 +559,7 @@ function _runServer(argv) {
   const showUser = function (req, res, next) {
 
     const cert = req.connection.getPeerCertificate();
+    console.log(`======================${JSON.stringify(cert)}`)
     // check if the certificate is valid
     if (req.client.authorized) {
       // check if the certificate is not expired
