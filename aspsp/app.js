@@ -81,6 +81,7 @@ router.post('/acs',
 		try {
 			var dbIban = database.getName(req.user.fiscalNumber)
 		} catch(err) {
+			req.logout();
 			res.render('login', {error: err});
 		}
 		
