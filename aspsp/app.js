@@ -99,6 +99,30 @@ router.post('/acs',
 	}
 );
 
+// clientId and clientIban
+router.get('/createClient', function(req, res) { //Should be POST
+	var clientId = req.query.clientId;
+	var clientIban = req.query.clientIban;
+	
+	try {
+		database.createClient(clientId, clientIban);
+		res.send('A new client has been created!');
+	} catch(error) {
+		res.send(error.message);
+	}
+});
+
+router.get('/deleteClient', function(req, res) {
+	var clientId = req.query.clientId;
+	
+	
+	try {
+		database.deleteClient(clientId);
+		res.send('Client with ID ' + clientId + ' has been deleted');
+	} catch(error) {
+		res.send(error.message);
+	}
+});
 
 router.get('/downloadVerifiableCredential', async (req, res) => {
 
