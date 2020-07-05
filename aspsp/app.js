@@ -130,6 +130,7 @@ router.get('/downloadVerifiableCredential', async (req, res) => {
 	try {
 		var dbIban = database.getName(req.user.fiscalNumber);
 	} catch(err) {
+		req.logout();
 		res.render('login', {error: err});
 	}
 	if(dbIban)
