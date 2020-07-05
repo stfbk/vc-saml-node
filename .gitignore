@@ -1,9 +1,6 @@
 # nodejs
 
-aspsp/node_modules/*
-csp/node_modules/*
-eidas-sp/node_modules/*
-ocsp/node_modules/*
+node_modules/
 
 # cryptographic material is stored in certificates/ subdirectories.
 # This is intentionally not added to .gitignore while we are in testing,
