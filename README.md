@@ -18,16 +18,23 @@ git clone ...
 
 ## Set-up - linux
 
-The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3 "Tricia" and 20 "Ulya" - Cinnamon (64-bit).
+The following steps were tested on [linux mint](https://www.linuxmint.com/) 19.3 "Tricia" - Cinnamon (64-bit).
 
-### install requirements
+### Install requirements
 
 ```bash
 sudo apt install nodejs npm sqlite3
 ```
 
-### add certificates to the browser
+### Add certificates to the browser
 
+We have provided three eID certificates to test different cases:
+
+- `eID_IT_LNRMNA[etc]` has been enrolled at the ASPSP and should be able to complete the scenario successfully.
+- `eID_IT_GNTCSR[etc]` has an expired certificate and should not be able to successfully authenticate at the IDP.
+- `eID_IT_FRRFNC[etc]` has not been enrolled at the ASPSP and should not be granted a VC to download (may require browser restart after failed login, WIP)
+
+Add the first certificate to your browser; two examples are provided.
 
 #### chromium
 
@@ -35,8 +42,6 @@ sudo apt install nodejs npm sqlite3
 - Under the `Your certificates` tab, click `Import`
 - Select one of the `eID_*.p12` files available in the `cerfificates` folder.
 - When prompted for a password, read it from the corresponding `eID_*.p12.pass` text file.
-
-In Mint 20, chromium is not installed by default. You can install it via `sudo apt install chromium`.
 
 #### firefox
 
@@ -74,10 +79,24 @@ Visit `localhost:8888` to use ASPSP and `localhost:8889` to use CSP
 
 ## Onboarding and Verifiable Credential flow
 
-We have provided three eID certificates to test different cases:
+After performing all the steps in Setup:
 
-- `eID_IT_FRRFNC[etc]`
-- `eID_IT_GNTCSR[etc]` has an expired certificate and should not be able to successfully authenticate at the IDP
-- `eID_IT_LNRMNA[etc]`
+- Obtain your Verifiable Credential from the ASPSP
+-- navigate to `localhost:8888` and select "Login with eIDAS"
+-- select "Allow" when redirected to the IDP verify the correctness of the information provided by the IDP and express consent to sharing it
+-- select "Download Verifiable Credential" after being redirected to the ASPSP
+- Present your Verifiable Credential to the CSP
+-- navigate to `localhost:8889` and select "Login with eIDAS"
+-- select "Allow" when redirected to the IDP verify the correctness of the information provided by the IDP and express consent to sharing it
 
+### Notes
+
+The first time you visit the provided `localhost` services, you will be prompted to accept the risk of visiting a site with an untrusted CA.
+
+After logging in with one of the provided certificates, you may need to restart your browser to attempt the flow with a different one.
+
+The ASPSP uses an sqlite3 db to manage onboarded users. This is not a fully developed feature. Users can be added or deleted at the following endpoints:
+
+- adding an account holder: `https://localhost:8888/createClient?clientId=<personal_identifier>&clientIban=<IBAN>`
+- deleting an account holder: `https://localhost:8888/deleteClient?clientId=<personal_identifier>`
 
