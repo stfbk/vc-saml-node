@@ -103,6 +103,16 @@ After performing all the steps in Setup:
 
 - VCs are saved as plain `.json` files to the local drive. A credential management client is not the focus of this proof of concept.
 
+## Credits
+
+- [saml-idp](https://www.npmjs.com/package/saml-idp): Identity Provider implementation
+- [saml service provider](https://medium.com/disney-streaming/setup-a-single-sign-on-saml-test-environment-with-docker-and-nodejs-c53fc1a984c9) medium walkthrough
+- [passport-saml](https://github.com/bergie/passport-saml): managing logins at the service providers
+
+- [vc-js](https://github.com/digitalbazaar/vc-js): verifiable credentials
+
+- [random-italian-person](https://pypi.org/project/random-italian-person/): random eID subject personal data
+
 ## License
 Copyright 2020, Fondazione Bruno Kessler
 
