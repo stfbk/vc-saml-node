@@ -29,6 +29,8 @@ We have provided three eID certificates to test different cases:
 
 Add the first certificate to your browser; two examples are provided.
 
+Disclaimer: every certificate in this repository is entirely fictional, and apparently personal data has been generated entirely at random using [random-italian-person](https://pypi.org/project/random-italian-person/).
+
 #### chromium
 
 1. Navigate to `chrome://settings/certificates` -- or manually go to the browser's `Settings` -> `Privacy and security` -> `More` -> `Manage Certificates`
@@ -84,6 +86,8 @@ After performing all the steps in Setup:
     1. select "Allow" when redirected to the IDP verify the correctness of the information provided by the IDP and express consent to sharing it
 
 ### Notes
+
+- Disclaimer: every certificate in this repository is entirely fictional, and apparently personal data has been generated entirely at random using [random-italian-person](https://pypi.org/project/random-italian-person/).
 
 - The first time you visit the provided `localhost` services, you will be prompted to accept the risk of visiting a site with an untrusted CA.
 
